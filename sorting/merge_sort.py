@@ -23,7 +23,6 @@ class MergeSort:
         return C
 
     def sort(self, arr):
-        print(arr)
         if len(arr) <= 1:
             return arr
         else:
