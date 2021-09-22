@@ -51,6 +51,7 @@ class MatrixMultiplier:
 
         # Combining the 4 quadrants into a single matrix by stacking horizontally and vertically.
         c = np.vstack((np.hstack((c11, c12)), np.hstack((c21, c22))))
+        print(c)
         return c
 
     def brute_force(self):
