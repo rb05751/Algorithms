@@ -4,6 +4,7 @@ import random
 
 class PriorityQueue:
     """An implementation of priority queue using a Heap"""
+
     def __init__(self, items, priority="max"):
         self.items = items
         self.priority = priority
@@ -33,11 +34,12 @@ class PriorityQueue:
         A = copy.deepcopy(self.items)
         if key < A[i]:
             return "Key is less than element in array therefore there is no increment"
-        A[i] = key
         if self.priority == "max":
             while i > 0 and (A[i // 2] < A[i]):
-                A = self.__swap(A, idx1=i // 2, idx2=i)
+                A[i] = A[i//2]
                 i = i // 2
+
+            A[i] = key
             self.items = A
         else:
             pass
@@ -75,6 +77,7 @@ class PriorityQueue:
                 return A
         else:
             pass
+
 
 if __name__ == '__main__':
     items = [1, 2, 3, 3, 4, 7, 8, 2, 9, 10, 14, 16]
