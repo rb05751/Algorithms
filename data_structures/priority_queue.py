@@ -32,17 +32,22 @@ class PriorityQueue:
 
     def increase_key(self, i, key):
         A = copy.deepcopy(self.items)
-        if key < A[i]:
-            return "Key is less than element in array therefore there is no increment"
-        if self.priority == "max":
-            while i > 0 and (A[i // 2] < A[i]):
-                A[i] = A[i//2]
-                i = i // 2
+        if i < len(A):
+            if key < A[i]:
+                return "Key is less than element in array therefore there is no increment"
+            if self.priority == "max":
+                while i > 0 and (A[i // 2] < A[i]):
+                    A[i] = A[i//2]
+                    i = i // 2
 
-            A[i] = key
-            self.items = A
+                A[i] = key
+                self.items = A
+            else:
+                A[i] = key
+                self.items = self.heapify(A, i)
         else:
-            pass
+            return A
+
 
     def insert(self, key):
         self.items.append(float('-inf'))  # O(1)
@@ -54,7 +59,8 @@ class PriorityQueue:
             for i in range(self.n // 2 - 1, -1, -1):
                 A = self.heapify(A, i)
         else:
-            pass
+            for i in range(self.n //2 - 1, -1, -1):
+                A = self.heapify(A, i)
         self.items = A
 
     def heapify(self, A, i):
@@ -76,15 +82,31 @@ class PriorityQueue:
             else:
                 return A
         else:
-            pass
+            smallest = None
+            l = 2 * i + 1
+            r = 2 * i + 2
+            if l <= len(A) - 1 and A[l] < A[i]:
+                smallest = l
+            else:
+                smallest = i
+
+            if r <= len(A) - 1 and A[r] < A[smallest]:
+                smallest = r
+
+            if smallest != i:
+                self.__swap(A, i, smallest)
+                return self.heapify(A, smallest)
+            else:
+                return A
+
 
 
 if __name__ == '__main__':
     items = [1, 2, 3, 3, 4, 7, 8, 2, 9, 10, 14, 16]
     random.shuffle(items)
     print(items)
-    queue = PriorityQueue(items=items, priority="max")
+    queue = PriorityQueue(items=items, priority="min")
     queue.build_heap()
     print(queue.items)
-    print(queue.extract_top())
+    queue.increase_key(2, 17)
     print(queue.items)
