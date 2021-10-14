@@ -2,7 +2,7 @@ import copy
 import random
 
 
-class PriorityQueue:
+class BinaryHeap:
     """An implementation of priority queue using a Heap"""
 
     def __init__(self, items, priority="max"):
@@ -30,27 +30,28 @@ class PriorityQueue:
         self.items = self.heapify(A, 0)
         return priority
 
-    def increase_key(self, i, key):
+    def increase_key(self, i, key, value=None):
         A = copy.deepcopy(self.items)
         if i < len(A):
-            if key < A[i]:
+            if key < list(A[i].keys())[0]:
                 return "Key is less than element in array therefore there is no increment"
+            A[i] = {key: value} if value is not None else {key: list(A[i].values())[0]}
             if self.priority == "max":
-                while i > 0 and (A[i // 2] < A[i]):
-                    A[i] = A[i//2]
-                    i = i // 2
+                while i > 0 and (list(A[i // 2-1].keys())[0] < list(A[i].keys())[0]):
+                    A[i] = A[i//2-1]
+                    i = i // 2-1
 
-                A[i] = key
+                A[i] = {key: value} if value is not None else {key: list(A[i].values())[0]}
                 self.items = A
             else:
-                A[i] = key
+                A[i] = {key: value} if value is not None else {key: list(A[i].values())[0]}
                 self.items = self.heapify(A, i)
         else:
             return A
 
 
-    def insert(self, key):
-        self.items.append(float('-inf'))  # O(1)
+    def insert(self, key, value):
+        self.items.append({float('-inf'): value})  # O(1)
         self.increase_key(i=len(self.items) - 1, key=key)
 
     def build_heap(self):
@@ -68,12 +69,12 @@ class PriorityQueue:
         if self.priority == "max":
             l = 2 * i + 1
             r = 2 * i + 2
-            if l <= len(A) - 1 and A[l] > A[i]:
+            if l <= len(A) - 1 and list(A[l].keys())[0] > list(A[i].keys())[0]:
                 largest = l
             else:
                 largest = i
 
-            if r <= len(A) - 1 and A[r] > A[largest]:
+            if r <= len(A) - 1 and list(A[r].keys())[0] > list(A[largest].keys())[0]:
                 largest = r
 
             if largest != i:
@@ -85,12 +86,12 @@ class PriorityQueue:
             smallest = None
             l = 2 * i + 1
             r = 2 * i + 2
-            if l <= len(A) - 1 and A[l] < A[i]:
+            if l <= len(A) - 1 and list(A[l].keys())[0] < list(A[i].keys())[0]:
                 smallest = l
             else:
                 smallest = i
 
-            if r <= len(A) - 1 and A[r] < A[smallest]:
+            if r <= len(A) - 1 and list(A[r].keys())[0] < list(A[smallest].keys())[0]:
                 smallest = r
 
             if smallest != i:
@@ -102,11 +103,10 @@ class PriorityQueue:
 
 
 if __name__ == '__main__':
-    items = [1, 2, 3, 3, 4, 7, 8, 2, 9, 10, 14, 16]
-    random.shuffle(items)
+    items = [{3: 'Dog'}, {2: 'Cat'}, {1: 'Bob'}, {6:'Sally'}, {4: 'Harry'}, {7: 'Lizard'}, {5: 'Frog'}]
     print(items)
-    queue = PriorityQueue(items=items, priority="min")
+    queue = BinaryHeap(items=items, priority="min")
     queue.build_heap()
     print(queue.items)
-    queue.increase_key(2, 17)
+    queue.increase_key(2, 9)
     print(queue.items)
