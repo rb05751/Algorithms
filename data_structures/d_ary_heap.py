@@ -92,6 +92,6 @@ class BinaryHeap:
 if __name__ == '__main__':
     items = [{3: 'Dog'}, {2: 'Cat'}, {1: 'Bob'}, {6:'Sally'}, {4: 'Harry'}, {7: 'Lizard'}, {5: 'Frog'}]
     print(items)
-    queue = BinaryHeap(items=items, d=2, priority="min")
+    queue = BinaryHeap(items=items, d=40, priority="min")
     queue.build_heap()
     print(queue.items)
