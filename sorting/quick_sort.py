@@ -3,15 +3,16 @@ import copy
 
 
 class QuickSort:
-    def __init__(self, items, is_random=False):
+    def __init__(self, items, is_random=False, ascending=True):
         self.items = items
         self.n = len(items)
         self.is_random = is_random
+        self.ascending = ascending
 
     def check(self, A):
         if len(A) != 0:
             last = A[0]
-            for i in range(1,len(A)):
+            for i in range(1, len(A)):
                 if A[i] != last:
                     return True
                 else:
@@ -35,12 +36,22 @@ class QuickSort:
         pivot = A[idx]
         self.__swap(A, idx1=idx, idx2=-1)
         i = -1
-        for j in range(len(A) - 1):
-            if A[j] <= pivot:
-                i += 1
-                A = self.__swap(A, idx1=j, idx2=i)
 
-        A = self.__swap(A, idx1=i + 1, idx2=-1)
+        if self.ascending:
+            for j in range(len(A) - 1):
+                if A[j] <= pivot:
+                    i += 1
+                    A = self.__swap(A, idx1=j, idx2=i)
+
+            A = self.__swap(A, idx1=i + 1, idx2=-1)
+        else:
+            for j in range(len(A) - 1):
+                if A[j] >= pivot:
+                    i += 1
+                    A = self.__swap(A, idx1=j, idx2=i)
+
+            A = self.__swap(A, idx1=i + 1, idx2=-1)
+
         return A, i + 1
 
     def sort(self, A):
@@ -53,7 +64,7 @@ class QuickSort:
 
 if __name__ == '__main__':
     num_list = [5, 2, 4, 6, 1, 3, 3, 8, 9, 11, 7, 0, 1, 4, 10, 12]
-    sorter = QuickSort(items=num_list, is_random=False)
+    sorter = QuickSort(items=num_list, is_random=False, ascending=True)
     if sorter.check(A=num_list):
         print(sorter.sort(num_list))
     else:
