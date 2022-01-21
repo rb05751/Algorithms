@@ -1,5 +1,5 @@
 import numpy as np
-from sorting.merge_sort import MergeSort
+from Python.sorting.merge_sort import MergeSort
 
 
 class YoungTableau:

@@ -1,7 +1,7 @@
 """Objective of this algorithm is to determine if there are two items in a set of integers S of length (n)
 that's sum is equal to some desired value X."""
 
-from sorting.merge_sort import MergeSort
+from Python.sorting.merge_sort import MergeSort
 
 
 class TwoSum:

@@ -1,4 +1,4 @@
-from sorting.insertion_sort import InsertionSort
+from Python.sorting.insertion_sort import InsertionSort
 
 
 class BucketSort:
