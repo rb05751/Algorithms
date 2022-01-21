@@ -1,6 +1,6 @@
 import random
-import sys
-from sorting import bubble_sort, heap_sort, insertion_sort, merge_sort, quick_sort, selection_sort
+from Python.sorting import heap_sort, insertion_sort, quick_sort, selection_sort
+from Python.sorting import merge_sort, bubble_sort
 import time
 
 if __name__ == '__main__':
