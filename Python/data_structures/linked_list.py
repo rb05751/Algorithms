@@ -11,8 +11,11 @@ class Node:
 
 
 class LinkedList:
-    def __init__(self):
+    def __init__(self, items, sorted=False):
         self.nil = Node(data=None)  # This is our sentinel
+        self.items = items
+        self.sorted = sorted
+        self.__build()
 
     def add_node(self, data):
         if self.nil.next is None:
@@ -27,11 +30,88 @@ class LinkedList:
             node.next.prev = node
             self.nil.next = node
 
+    def insert(self, key, current_node):
+        if self.sorted:
+            if current_node.next is None:
+                node = Node(key)
+                current_node.next = node
+                node.prev = current_node
+                return
+            elif current_node.next.key > key:
+                node = Node(key)
+                current_node.next.prev = node
+                node.prev = current_node
+                node.next = current_node.next
+                current_node.next = node
+                return
+            else:
+                self.insert(key, current_node=current_node.next)
+        else:  # then we are passing in the sentinel
+            node = Node(key)
+            node.next = current_node.next
+            current_node.next.prev = node
+            current_node.next = node
+            node.prev = current_node
+            return
+
+    def __build(self):
+        if len(self.items) == 0:
+            return "No items to build list from"
+        if self.sorted:
+            self.nil.next = Node(self.items[0])
+            self.nil.next.prev = self.nil
+            for item in self.items[1:]:
+                self.insert(key=item, current_node=self.nil)
+        else:
+            self.nil.next = Node(self.items[0])
+            self.nil.next.prev = self.nil
+            for item in self.items[1:]:
+                self.insert(key=item, current_node=self.nil)
+
     def search(self, k):
         x = self.nil
         while x.next is not None or x.key != k:
             x = x.next
         return x
+
+    def get_min(self, L_nil, extract=False):
+        if L_nil.next is None:
+            return None
+        if self.sorted:
+            if extract:
+                min_item = L_nil.next
+                L_nil.next = min_item.next
+                if min_item.next is not None:
+                    min_item.next.prev = L_nil
+                return min_item
+            else:
+                if L_nil.next is not None:
+                    return L_nil.next.key
+                else:
+                    return None
+
+    def union(self, L_2, L_3=None): # merges subject list with another list
+        L_3 = LinkedList(items=[]) if L_3 is None else L_3
+        min_item_1 = self.get_min(L_nil=self.nil, extract=False)
+        min_item_2 = self.get_min(L_nil=L_2.nil, extract=False)
+        if min_item_1 is not None and min_item_2 is not None:
+            if min_item_1 <= min_item_2:
+                min_item = self.get_min(L_nil=self.nil, extract=True)
+            else:
+                min_item = self.get_min(L_nil=L_2.nil, extract=True)
+            self.insert(key=min_item.key, current_node=L_3.nil)
+            self.union(L_2, L_3)
+        elif min_item_1 is None and min_item_2 is not None:
+            min_item = self.get_min(L_nil=L_2.nil, extract=True)
+            self.insert(key=min_item.key, current_node=L_3.nil)
+            self.union(L_2, L_3)
+        elif min_item_1 is not None and min_item_2 is None:
+            min_item = self.get_min(L_nil=self.nil, extract=True)
+            self.insert(key=min_item.key, current_node=L_3.nil)
+            self.union(L_2, L_3)
+        else: # this means we have inserted all elements from each list into L_3
+            return L_3
+        return L_3
 
     def delete(self, k):
         x = self.search(k=k)
@@ -121,30 +201,14 @@ class LinkedArrayList:
 
 if __name__ == '__main__':
     """Regular Linked List implementation"""
-    # L = LinkedList()
-    # L.add_node(data=1)
-    # L.add_node(data=4)
-    # L.add_node(data=16)
-    # L.add_node(data=9)
-    # print(L)
-    # L.add_node(data=25)
-    # print(L)
-    # L.delete(k=1)
-    # print(L)
-
-    """Linked List Implementation with Array"""
-    L = LinkedArrayList(M=10)
-    items = [23, 17, 4, 6, 8, 19]
-    for item in items:
-        L.insert(item)
-        print(f"Insert {item}")
-        print(f"Head: {L.L}")
-        print(f"Free: {L.free}")
-        print(L.A)
-
-    print(f"Deleting index 5")
-    L.delete(index=5)
-    print(f"Head: {L.L}")
-    print(f"Free: {L.free}")
-    print(L.A)
-
+    items_1 = list(range(200))
+    items_2 = list(range(100))
+    import random
+    import sys
+    sys.setrecursionlimit(10**6)
+    random.shuffle(items_1)
+    random.shuffle(items_2)
+    L_1 = LinkedList(items=items_1, sorted=True)
+    L_2 = LinkedList(items=items_2, sorted=True)
+    merged_list = L_1.union(L_2)
+    print(merged_list)
