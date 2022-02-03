@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 """Object-oriented approach to Linked-list"""
 
@@ -149,12 +150,25 @@ class LinkedArrayList:
         for i in range(self.A.shape[1]):
             self.A[:, i] = np.array(['nan' for _ in range(self.A.shape[0])])
 
+    def __restore_position(self, item_idx):
+        if self.A[2, item_idx] != 'nan':
+            if self.A[1, item_idx] < self.A[1, item_idx-1]: # if this item is greater than last one
+                # swap
+                tmp = self.A[1, item_idx-1]
+                self.A[1, item_idx-1] = self.A[1, item_idx]
+                self.A[1, item_idx] = tmp
+                self.__restore_position(item_idx=item_idx-1)
+            else:
+                return
+        else:
+            return
+
     def insert(self, key):
         if self.free == 'nan':
             raise Exception("There is no more space left in the list")
         else:
             x = self.free
-            if self.free + 1 == self.A.shape[1]:
+            if self.free + 1 == self.A.shape[1]: # we've hit end of list
                 self.free = 'nan'
             else:
                 self.free += 1
@@ -168,6 +182,8 @@ class LinkedArrayList:
             else:
                 self.A[2, x] = x - 1  # reference last object
                 self.A[0, x - 1] = x  # change prev objects next ptr to this ones
+
+            self.__restore_position(item_idx=x)
 
     def delete(self, index):
         if self.L == 'nan':
@@ -195,20 +211,34 @@ class LinkedArrayList:
                 self.A[0, i] = self.A[0, i] - 1 if self.A[0, i] != 'nan' else 'nan'
                 self.A[2, i] -= 1 if self.A[2, i] != 'nan' else 'nan'
 
+    def search(self, i, k):
+        if i != 'nan' and self.A[1, i] < k:
+            j = random.randint(0,self.free-1)
+            if self.A[1, i] < self.A[1, j] <= k:
+                i = j
+                if self.A[1, j] == k:
+                    return i
+            return self.search(i=i+1, k=k) # keep searching starting at next index
+        if i == 'nan':
+            return None
+        if self.A[1, i] > k:
+            return None
+        else:
+            return i
+
     def __repr__(self):
         return str(self.A)
 
 
 if __name__ == '__main__':
-    """Regular Linked List implementation"""
-    items_1 = list(range(200))
-    items_2 = list(range(100))
     import random
     import sys
     sys.setrecursionlimit(10**6)
-    random.shuffle(items_1)
-    random.shuffle(items_2)
-    L_1 = LinkedList(items=items_1, sorted=True)
-    L_2 = LinkedList(items=items_2, sorted=True)
-    merged_list = L_1.union(L_2)
-    print(merged_list)
+    items = list(range(50))
+    random.shuffle(items)
+    linked_list = LinkedArrayList(M=len(items)*2)
+    for item in items:
+        linked_list.insert(key=item)
+    linked_list.delete(index=31)
+    print(linked_list)
+    print(linked_list.search(i=linked_list.L, k=49))
