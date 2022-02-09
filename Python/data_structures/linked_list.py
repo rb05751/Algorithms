@@ -6,7 +6,7 @@ import random
 
 class Node:
     def __init__(self, data):
-        self.key = data
+        self.data = data # satellite data
         self.next = None
         self.prev = None
 
@@ -50,10 +50,15 @@ class LinkedList:
         else:  # then we are passing in the sentinel
             node = Node(key)
             node.next = current_node.next
-            current_node.next.prev = node
-            current_node.next = node
-            node.prev = current_node
-            return
+            if current_node.next is not None:
+                current_node.next.prev = node
+                current_node.next = node
+                node.prev = current_node
+                return
+            else:
+                current_node.next = node
+                node.prev = current_node
+                return
 
     def __build(self):
         if len(self.items) == 0:
@@ -129,7 +134,7 @@ class LinkedList:
         full_list = []
         x = self.nil
         while x.next is not None:
-            full_list.append(x.next.key)
+            full_list.append(x.next.data)
             x = x.next
 
         return str(full_list)
