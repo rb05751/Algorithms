@@ -130,6 +130,15 @@ class LinkedList:
         else:
             return f"Item with key {k} does not exist"
 
+    def __len__(self):
+        full_list = []
+        x = self.nil
+        while x.next is not None:
+            full_list.append(x.next.data)
+            x = x.next
+
+        return len(full_list)
+
     def __repr__(self):
         full_list = []
         x = self.nil

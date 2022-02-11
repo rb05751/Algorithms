@@ -1,3 +1,5 @@
+import sys
+
 from linked_list import LinkedList
 
 
@@ -18,8 +20,10 @@ class DirectAddressTable:
     def search(self, key):
         return self.table[key].search(k=key)
 
-    def insert(self, key):
-        self.table[key].insert(key=key, current_node=self.table[key].nil)
+    def insert(self, x):
+        hash_value = hash(str(x))
+        hash_value = int(((hash_value + sys.maxsize) / (sys.maxsize + sys.maxsize)) * len(self.table))
+        self.table[hash_value].insert(key=x, current_node=self.table[hash_value].nil)
 
     def delete(self, key):
         return self.table[key].delete(k=key)
@@ -27,7 +31,8 @@ class DirectAddressTable:
 
 
 if __name__ == '__main__':
-    table = DirectAddressTable(items=list(range(100)) + list(range(10)) + list(range(500)))
-    print(table.table)
+    table = DirectAddressTable(items=list(range(1000)) + list(range(100)) + list(range(5000)))
+    table = table.table
+
 
 
