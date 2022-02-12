@@ -76,7 +76,7 @@ class LinkedList:
 
     def search(self, k):
         x = self.nil
-        while x.next is not None or x.key != k:
+        while x.next is not None and x.data != k:
             x = x.next
         return x
 
@@ -121,7 +121,7 @@ class LinkedList:
 
     def delete(self, k):
         x = self.search(k=k)
-        if x.key is not None:
+        if x.data is not None:
             if x.next is None:
                 x.prev.next = x.next
             else:
