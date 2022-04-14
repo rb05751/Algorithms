@@ -172,3 +172,4 @@ if __name__ == '__main__':
     bst.delete(key=13)
     print(f"----New Tree----")
     print(bst)
+    print(bst.find(12).key)
