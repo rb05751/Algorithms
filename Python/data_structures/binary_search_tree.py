@@ -15,9 +15,6 @@ class BinarySearchTree:
         self.partitioner = QuickSort(items=[], is_random=randomized)
         self.__build(items=init_items)
 
-    ###################
-    # PRIVATE METHODS #
-    ###################
     def __build(self, items, parent=None):
         """partitions the initial items recursively while inserting each partitioned node into tree"""
         if len(items) == 0:
@@ -90,9 +87,9 @@ class BinarySearchTree:
             print(f"Node: {node.key} Right child: {node.right_child.key}")
             self.__print_tree(node.right_child)
 
-    ##################
-    # PUBLIC METHODS #
-    ##################
+    ###################
+    # MAIN OPERATIONS #
+    ###################
 
     def insert(self, key=None, current_node=None, node=None):
         """
