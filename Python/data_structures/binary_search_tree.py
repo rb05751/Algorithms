@@ -95,9 +95,15 @@ class BinarySearchTree:
     ##################
 
     def insert(self, key=None, current_node=None, node=None):
+        """
+        :param key: int - key for a node
+        :param current_node: Node - node that we are currently on in the recursion (Must be initialized with Root)
+        :param node: Node - Type of node so base class knows which one to create when inserting.
+        :return: The inserted node
+        """
         if self.root is None:  # if tree is empty
             self.root = node(key)
-            return
+            return self.root
 
         if key < current_node.key:
             if current_node.left_child.key is None or current_node.left_child.key is None:

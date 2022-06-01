@@ -164,11 +164,9 @@ class AVLTree(RedBlackTree):
 
 
 if __name__ == '__main__':
-    # [41, 38, 31, 12, 19, 8]
-    avl_tree = AVLTree(init_items=[31, 38, 41, 19, 8, 52])
+    avl_tree = AVLTree(init_items=[41, 38, 31, 12, 19, 8])
 
-    # items_to_delete = [8, 12, 19, 31, 38, 41]
-    items_to_delete = [19]
+    items_to_delete = [8, 12, 19, 31, 38, 41]
     for item in items_to_delete:
         avl_tree.delete(item)
 
