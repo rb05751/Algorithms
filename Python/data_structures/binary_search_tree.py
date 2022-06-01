@@ -21,9 +21,9 @@ class BinarySearchTree:
     def __build(self, items, parent=None):
         """partitions the initial items recursively while inserting each partitioned node into tree"""
         if len(items) == 0:
-            return Node(key=None, left_child=None, right_child=None, parent=parent)
+            return None
         if len(items) == 1:
-            return Node(key=items[0], left_child=Node(key=None), right_child=Node(key=None), parent=parent)
+            return Node(key=items[0], parent=parent)
         else:
             _, partition_idx = self.partitioner.reg_partition(A=items)
             new_node = Node(key=items[partition_idx])
@@ -37,21 +37,21 @@ class BinarySearchTree:
             new_node.right_child = self.__build(items[partition_idx + 1:], parent=new_node)
         return new_node
 
-    def __find_minimum(self, node):
+    def find_minimum(self, node):
         if node.left_child.key is None:
             return node
         else:
-            return self.__find_minimum(node=node.left_child)
+            return self.find_minimum(node=node.left_child)
 
-    def __find_maximum(self, node):
+    def find_maximum(self, node):
         if node.right_child.key is None:
             return node
         else:
-            return self.__find_maximum(node=node.right_child)
+            return self.find_maximum(node=node.right_child)
 
-    def __find_successor(self, node):
+    def find_successor(self, node):
         if node.right_child.key is not None:
-            return self.__find_minimum(node=node.right_child)
+            return self.find_minimum(node=node.right_child)
 
         trailing_node = node.parent
         while trailing_node.key is not None and node is trailing_node.right:
@@ -59,9 +59,9 @@ class BinarySearchTree:
             trailing_node = trailing_node.parent
         return trailing_node
 
-    def __find_predecessor(self, node):
+    def find_predecessor(self, node):
         if node.left_child.key is not None:
-            return self.__find_maximum(node=node.left_child)
+            return self.find_maximum(node=node.left_child)
 
         trailing_node = node.parent
         while trailing_node.key is not None and node is trailing_node.left:
@@ -69,9 +69,9 @@ class BinarySearchTree:
             trailing_node = trailing_node.parent
         return trailing_node
 
-    def __transplant(self, node1, node2):
+    def transplant(self, node1, node2):
         """Transplants subtree rooted at node1 with node2's subtree"""
-        if node1.parent.key is None:
+        if node1.parent is None:
             self.root = node2
         elif node1 is node1.parent.left_child:
             node1.parent.left_child = node2
@@ -94,31 +94,30 @@ class BinarySearchTree:
     # PUBLIC METHODS #
     ##################
 
-    def insert(self, key=None, current_node=None):
-        if self.root is None: # if tree is empty
-            self.root = Node(key)
+    def insert(self, key=None, current_node=None, node=None):
+        if self.root is None:  # if tree is empty
+            self.root = node(key)
             return
-        if current_node is None: current_node = self.root # init starting position for all inserts
 
-        if current_node.key is not None:
-            if key < current_node.key:
-                self.insert(key=key, current_node=current_node.left_child)
-            else:
-                self.insert(key=key, current_node=current_node.right_child)
+        if key < current_node.key:
+            if current_node.left_child.key is None or current_node.left_child.key is None:
+                new_node = node(key=key, parent=current_node)
+                current_node.left_child.parent = None
+                current_node.left_child = new_node
+                return new_node
+            return self.insert(key=key, current_node=current_node.left_child, node=node)
         else:
-            if current_node.parent.left_child is current_node:
-                new_node = Node(key=key, parent=current_node.parent)
-                current_node.parent.left_child = new_node
-                new_node.parent = current_node.parent
-            else:
-                new_node = Node(key=key, parent=current_node.parent)
-                current_node.parent.right_child = new_node
-                new_node.parent = current_node.parent
+            if current_node.right_child.key is None or current_node.right_child.key is None:
+                new_node = node(key=key, parent=current_node)
+                current_node.right_child.parent = None
+                current_node.right_child = new_node
+                return new_node
+            return self.insert(key=key, current_node=current_node.right_child, node=node)
 
     def find(self, key=None, current_node=None):
-        if self.root is None: # if tree is empty
+        if self.root is None:  # if tree is empty
             return None
-        if current_node is None: current_node = self.root # init starting position for all inserts
+        if current_node is None: current_node = self.root  # init starting position for all inserts
 
         if current_node.key is None:
             return None
@@ -141,17 +140,17 @@ class BinarySearchTree:
             if node.parent.right_child is node: node.parent.right_child = Node(key=None)
 
         elif node.left_child.key is None and node.right_child.key is not None:
-            self.__transplant(node1=node, node2=node.right_child)
+            self.transplant(node1=node, node2=node.right_child)
         elif node.right_child.key is None and node.left_child.key is not None:
-            self.__transplant(node1=node, node2=node.left_child)
+            self.transplant(node1=node, node2=node.left_child)
         elif node.left_child.key is not None and node.right_child.key is not None:
-            successor = self.__find_successor(node=node)
+            successor = self.find_successor(node=node)
             if successor is node.right_child:
-                self.__transplant(node1=node, node2=successor)
+                self.transplant(node1=node, node2=successor)
                 successor.left_child = node.left_child
                 successor.left_child.parent = successor
             else:
-                self.delete(key=successor.key) # I <3 Recursion :)
+                self.delete(key=successor.key)  # I <3 Recursion :)
                 if node is self.root: self.root = successor
                 successor.left_child, successor.left_child.parent = node.left_child, successor
                 successor.right_child, successor.right_child.parent = node.right_child, successor
@@ -168,8 +167,6 @@ class BinarySearchTree:
 if __name__ == '__main__':
     bst = BinarySearchTree(init_items=[12, 5, 2, 9, 18, 15, 19, 17, 13], randomized=True)
     print(bst)
-    print("Deleting key 13")
-    bst.delete(key=13)
+    bst.delete(key=bst.root.key)
     print(f"----New Tree----")
     print(bst)
-    print(bst.find(12).key)
