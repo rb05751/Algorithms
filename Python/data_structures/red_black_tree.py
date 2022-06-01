@@ -77,9 +77,6 @@ class RedBlackTree(BinarySearchTree):
         y.right_child = node
         node.parent = y
 
-    ###################
-    # PRIVATE METHODS #
-    ###################
     def __build(self, init_items):
         for item in init_items:
             self.__insert(key=item, current_node=self.root)
