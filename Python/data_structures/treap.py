@@ -1,6 +1,6 @@
 """
 Treap: A type of binary search tree where each node maintains both a key & a randomly assigned priority attribute.
-The tree is structured such the binary search property holds on the keys and the min heap property holds on the priorities.
+The tree is structured such that the binary search property holds on the keys and the min heap property holds on the priorities.
 
 Cool Fact: The resulting tree that satisfies the Treap properties is the same Binary Search Tree that would have been formed if
 the nodes were inserted in order of their randomly assigned priorities into a regular Binary Search Tree.
