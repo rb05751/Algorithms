@@ -96,25 +96,6 @@ class OrderStatisticTree(RedBlackTree):
         if y_og_color == 'Black':
             super().delete_fixup(current_node=x)
 
-    def find_ith_stat(self, current_node, i):
-        if current_node is None or current_node.key is None:
-            return None
-        r = current_node.left_child.size + 1
-        if i == r:
-            return current_node.key
-        elif i < r:
-            return self.find_ith_stat(current_node=current_node.left_child, i=i)
-        else:
-            return self.find_ith_stat(current_node=current_node.right_child, i=i - r)
-
-    def find_ith_rank(self, current_node, rank):
-        if current_node is self.root:
-            return rank
-        else:
-            if current_node is current_node.parent.right_child:
-                rank += current_node.parent.left_child.size + 1
-            return self.find_ith_rank(current_node=current_node.parent, rank=rank)
-
 
 if __name__ == '__main__':
     os_tree = OrderStatisticTree(init_items=[41, 38, 31, 12, 19, 8])

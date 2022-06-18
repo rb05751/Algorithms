@@ -1,4 +1,4 @@
-from sorting.quick_sort import QuickSort
+from algorithms.sorting.quick_sort import QuickSort
 
 
 class Node:

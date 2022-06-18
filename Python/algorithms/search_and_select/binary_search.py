@@ -1,4 +1,4 @@
-from Python.sorting import insertion_sort
+from algorithms.sorting import insertion_sort
 
 
 class BinarySearch:

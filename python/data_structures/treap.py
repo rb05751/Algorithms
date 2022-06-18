@@ -6,8 +6,8 @@ Cool Fact: The resulting tree that satisfies the Treap properties is the same Bi
 the nodes were inserted in order of their randomly assigned priorities into a regular Binary Search Tree.
 """
 
-from binary_search_tree import Node
-from red_black_tree import RedBlackTree
+from data_structures.trees.binary_search_tree import Node
+from data_structures.trees.red_black_tree import RedBlackTree
 import random
 
 

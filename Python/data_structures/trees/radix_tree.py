@@ -8,7 +8,7 @@
 
 """
 
-from binary_search_tree import Node
+from data_structures.trees.binary_search_tree import Node
 
 
 class RadixTree:

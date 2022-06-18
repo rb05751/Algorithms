@@ -2,7 +2,7 @@
 
 from typing import *
 import copy
-from Python.sorting.insertion_sort import InsertionSort
+from algorithms.sorting.insertion_sort import InsertionSort
 
 Array = List[float]
 

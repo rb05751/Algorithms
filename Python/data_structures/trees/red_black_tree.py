@@ -8,7 +8,7 @@ The tree at all times must satisfy the following properties:
 5. For each node, all simple paths from the node to descendant leaves contain the same number of black nodes.
 """
 
-from binary_search_tree import BinarySearchTree, Node
+from data_structures.trees.binary_search_tree import BinarySearchTree, Node
 
 
 class RBNode(Node):
@@ -32,7 +32,7 @@ class RedBlackTree(BinarySearchTree):
     ##################
     # HELPER METHODS #
     ##################
-    def __rb_transplant(self, node1, node2):
+    def rb_transplant(self, node1, node2):
         """Transplants subtree rooted at node1 with node2's subtree"""
         if node1.parent is None:
             self.root = node2
@@ -59,6 +59,7 @@ class RedBlackTree(BinarySearchTree):
             node.parent.right_child = y
         y.left_child = node
         node.parent = y
+        return node, y
 
     def right_rotate(self, node):
         """Makes the current nodes left child its parent while the current node takes over
@@ -76,12 +77,13 @@ class RedBlackTree(BinarySearchTree):
             node.parent.right_child = y
         y.right_child = node
         node.parent = y
+        return node, y
 
     def __build(self, init_items):
         for item in init_items:
-            self.__insert(key=item, current_node=self.root)
+            self.rb_insert(key=item, current_node=self.root)
 
-    def __insert_fixup(self, current_node):
+    def insert_fixup(self, current_node):
         if current_node.parent is None:
             self.root.color = 'Black'
         elif current_node.parent.color == 'Black':
@@ -94,7 +96,7 @@ class RedBlackTree(BinarySearchTree):
                     current_node.parent.color = 'Black'
                     current_nodes_uncle.color = 'Black'
                     current_node.parent.parent.color = 'Red'
-                    return self.__insert_fixup(current_node=current_node.parent.parent)
+                    return self.insert_fixup(current_node=current_node.parent.parent)
                 # CASE 2
                 elif current_node is current_node.parent.right_child:
                     current_node = current_node.parent
@@ -103,7 +105,7 @@ class RedBlackTree(BinarySearchTree):
                 current_node.parent.color = 'Black'
                 current_node.parent.parent.color = 'Red'
                 self.right_rotate(node=current_node.parent.parent)
-                return self.__insert_fixup(current_node=current_node)
+                return self.insert_fixup(current_node=current_node)
             else:
                 current_nodes_uncle = current_node.parent.parent.left_child
                 # CASE 1
@@ -111,7 +113,7 @@ class RedBlackTree(BinarySearchTree):
                     current_node.parent.color = 'Black'
                     current_nodes_uncle.color = 'Black'
                     current_node.parent.parent.color = 'Red'
-                    return self.__insert_fixup(current_node=current_node.parent.parent)
+                    return self.insert_fixup(current_node=current_node.parent.parent)
                 # CASE 2
                 elif current_node is current_node.parent.left_child:
                     current_node = current_node.parent
@@ -120,11 +122,11 @@ class RedBlackTree(BinarySearchTree):
                 current_node.parent.color = 'Black'
                 current_node.parent.parent.color = 'Red'
                 self.left_rotate(node=current_node.parent.parent)
-                return self.__insert_fixup(current_node=current_node)
+                return self.insert_fixup(current_node=current_node)
 
         self.root.color = 'Black'
 
-    def __delete_fixup(self, current_node):
+    def delete_fixup(self, current_node):
         if current_node is self.root or current_node.color == 'Red':
             current_node.color = 'Black'
             return
@@ -138,7 +140,7 @@ class RedBlackTree(BinarySearchTree):
                 current_nodes_sibling = current_node.parent.right_child
             if current_nodes_sibling.left_child.color == current_nodes_sibling.right_child.color == 'Black':
                 current_nodes_sibling.color = 'Red'
-                return self.__delete_fixup(current_node=current_node.parent)
+                return self.delete_fixup(current_node=current_node.parent)
             elif current_nodes_sibling.right_child.color == 'Black':
                 current_nodes_sibling.left_child.color = 'Black'
                 current_nodes_sibling.color = 'Red'
@@ -147,7 +149,7 @@ class RedBlackTree(BinarySearchTree):
             current_nodes_sibling.color, current_node.parent.color, current_nodes_sibling.right_child.color = current_node.parent.color, 'Black', 'Black'
             self.left_rotate(node=current_node.parent)
             current_node = self.root
-            return self.__delete_fixup(current_node=current_node)
+            return self.delete_fixup(current_node=current_node)
         else:
             current_nodes_sibling = current_node.parent.left_child
             if current_nodes_sibling.color == 'Red':
@@ -157,7 +159,7 @@ class RedBlackTree(BinarySearchTree):
                 current_nodes_sibling = current_node.parent.left_child
             if current_nodes_sibling.left_child.color == current_nodes_sibling.right_child.color == 'Black':
                 current_nodes_sibling.color = 'Red'
-                return self.__delete_fixup(current_node=current_node.parent)
+                return self.delete_fixup(current_node=current_node.parent)
             elif current_nodes_sibling.left_child.color == 'Black':
                 current_nodes_sibling.right_child.color = 'Black'
                 current_nodes_sibling.color = 'Red'
@@ -166,33 +168,30 @@ class RedBlackTree(BinarySearchTree):
             current_nodes_sibling.color, current_node.parent.color, current_nodes_sibling.left_child.color = current_node.parent.color, 'Black', 'Black'
             self.right_rotate(node=current_node.parent)
             current_node = self.root
-            return self.__delete_fixup(current_node=current_node)
+            return self.delete_fixup(current_node=current_node)
 
     ###################
     # MAIN OPERATIONS #
     ###################
-    def __insert(self, key=None, current_node=None):
+    def rb_insert(self, key=None, current_node=None):
         if current_node is None:
             self.root = RBNode(key=key, color='Red')
-            self.__insert_fixup(self.root)
-        elif current_node.key is None:
-            self.root = RBNode(key=key, color='Red')
-            self.__insert_fixup(self.root)
+            self.insert_fixup(self.root)
         else:
             if key < current_node.key:
                 if current_node.left_child.key is not None:
-                    self.insert(key, current_node=current_node.left_child)
+                    self.rb_insert(key, current_node=current_node.left_child)
                 else:
                     new_node = RBNode(key=key, color='Red', parent=current_node)
                     current_node.left_child.parent, current_node.left_child = None, new_node
-                    self.__insert_fixup(current_node=new_node)
+                    self.insert_fixup(current_node=new_node)
             else:
                 if current_node.right_child.key is not None:
-                    self.insert(key, current_node=current_node.right_child)
+                    self.rb_insert(key, current_node=current_node.right_child)
                 else:
                     new_node = RBNode(key=key, color='Red', parent=current_node)
                     current_node.right_child.parent, current_node.right_child = None, new_node
-                    self.__insert_fixup(current_node=new_node)
+                    self.insert_fixup(current_node=new_node)
 
     def delete(self, key):
         node_to_delete = self.find(key=key, current_node=self.root)
@@ -200,10 +199,10 @@ class RedBlackTree(BinarySearchTree):
 
         if node_to_delete.left_child.key is None:
             x = node_to_delete.right_child
-            self.__rb_transplant(node_to_delete, x)
+            self.rb_transplant(node_to_delete, x)
         elif node_to_delete.right_child.key is None:
             x = node_to_delete.left_child
-            self.__rb_transplant(node_to_delete, x)
+            self.rb_transplant(node_to_delete, x)
         else:
             y = self.find_minimum(node=node_to_delete.right_child)
             y_og_color = y.color
@@ -211,14 +210,14 @@ class RedBlackTree(BinarySearchTree):
             if y.parent is node_to_delete:
                 x.parent = y
             else:
-                self.__rb_transplant(node1=y, node2=y.right_child)
+                self.rb_transplant(node1=y, node2=y.right_child)
                 y.right_child = node_to_delete.right_child
                 y.right_child.parent = y
-            self.__rb_transplant(node1=y, node2=y.right_child)
+            self.rb_transplant(node1=y, node2=y.right_child)
             y.left_child, y.left_child.parent, y.color = node_to_delete.left_child, y, node_to_delete.color
 
         if y_og_color == 'Black':
-            self.__delete_fixup(current_node=x)
+            self.delete_fixup(current_node=x)
 
 
 if __name__ == '__main__':

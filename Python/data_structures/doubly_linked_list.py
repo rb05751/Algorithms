@@ -11,7 +11,7 @@ class Node:
         self.prev = None
 
 
-class LinkedList:
+class DoublyLinkedList:
     def __init__(self, items, sorted=False):
         self.nil = Node(data=None)  # This is our sentinel
         self.items = items
@@ -38,7 +38,7 @@ class LinkedList:
                 current_node.next = node
                 node.prev = current_node
                 return
-            elif current_node.next.key > key:
+            elif current_node.next.data > key:
                 node = Node(key)
                 current_node.next.prev = node
                 node.prev = current_node
@@ -63,16 +63,10 @@ class LinkedList:
     def __build(self):
         if len(self.items) == 0:
             return "No items to build list from"
-        if self.sorted:
-            self.nil.next = Node(self.items[0])
-            self.nil.next.prev = self.nil
-            for item in self.items[1:]:
-                self.insert(key=item, current_node=self.nil)
-        else:
-            self.nil.next = Node(self.items[0])
-            self.nil.next.prev = self.nil
-            for item in self.items[1:]:
-                self.insert(key=item, current_node=self.nil)
+        self.nil.next = Node(self.items[0])
+        self.nil.next.prev = self.nil
+        for item in self.items[1:]:
+            self.insert(key=item, current_node=self.nil)
 
     def search(self, k):
         x = self.nil
@@ -97,7 +91,7 @@ class LinkedList:
                     return None
 
     def union(self, L_2, L_3=None): # merges subject list with another list
-        L_3 = LinkedList(items=[]) if L_3 is None else L_3
+        L_3 = DoublyLinkedList(items=[]) if L_3 is None else L_3
         min_item_1 = self.get_min(L_nil=self.nil, extract=False)
         min_item_2 = self.get_min(L_nil=L_2.nil, extract=False)
         if min_item_1 is not None and min_item_2 is not None:
@@ -124,11 +118,13 @@ class LinkedList:
         if x.data is not None:
             if x.next is None:
                 x.prev.next = x.next
+                x.prev = None
             else:
                 x.prev.next = x.next
                 x.next.prev = x.prev
         else:
             return f"Item with key {k} does not exist"
+        return x
 
     def __len__(self):
         full_list = []
@@ -248,11 +244,15 @@ if __name__ == '__main__':
     import random
     import sys
     sys.setrecursionlimit(10**6)
+
     items = list(range(50))
     random.shuffle(items)
     linked_list = LinkedArrayList(M=len(items)*2)
+
     for item in items:
         linked_list.insert(key=item)
+
     linked_list.delete(index=31)
     print(linked_list)
+
     print(linked_list.search(i=linked_list.L, k=49))
