@@ -1,5 +1,3 @@
-import numpy as np
-
 """
 The goal of Matrix-Chain Multiplication is to find an optimal parenthesization of a chain of matrices, such that when
 you multiply all of the matrices, abiding by this parenthesization, you get the lowest number of scalar multiplications.
@@ -17,6 +15,8 @@ Proof:
   purported optimality of our original partition for A[i...j].
 
 """
+
+import numpy as np
 
 
 class MatrixChain:
