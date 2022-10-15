@@ -1,6 +1,6 @@
 """
 In fractional knapsack, you are given N items with some value (v) and weight (w) and your goal is to fill up a knapsack
-of capacity (W). The difference between fractional & non-fractional knapsack, is that you are now able to store
+of capacity (W) with the maximum value possible. The difference between fractional & non-fractional knapsack, is that you are now able to store
 fractional pieces of the items in the knapsack.
 
 Algorithm:
@@ -44,7 +44,7 @@ class FractionalKnapsack:
         knapsack = []
         for item in self.items:
             if capacity_left == 0: break
-            if item['w'] < capacity_left:
+            if item['w'] <= capacity_left:
                 item['percent_taken'] = 1
                 knapsack.append(item)
                 capacity_left -= item['w']
