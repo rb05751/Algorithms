@@ -2,7 +2,7 @@ import copy
 import random
 
 
-class BinaryHeap:
+class Heap:
     """An implementation of priority queue using a Heap"""
 
     def __init__(self, d, items, priority="max"):
@@ -17,7 +17,7 @@ class BinaryHeap:
         A[idx2] = temp
         return A
 
-    def get_top(self):
+    def get_root(self):
         A = copy.deepcopy(self.items)
         return A[0]
 
@@ -67,7 +67,7 @@ class BinaryHeap:
             children = list(filter(lambda x: x is not None, [[A[self.d * i + j],int(self.d * i + j)]  if int(self.d * i + j) < len(A) else None for j in range(1,self.d+1)]))
             if len(children) > 0: # check if we actually have children
                 largest = list(sorted(children, key=lambda x: list(x[0].keys())[0], reverse=True))[0]
-                if list(largest[0].keys())[0] > list(A[i].keys())[0]:
+                if list(largest[0].keys())[0] > list(A[i].keys())[0]: # compare based off keys
                     self.__swap(A, i, largest[1])
                     return self.heapify(A, largest[1]) # recurse on largest
                 else:
@@ -92,6 +92,6 @@ class BinaryHeap:
 if __name__ == '__main__':
     items = [{3: 'Dog'}, {2: 'Cat'}, {1: 'Bob'}, {6:'Sally'}, {4: 'Harry'}, {7: 'Lizard'}, {5: 'Frog'}]
     print(items)
-    queue = BinaryHeap(items=items, d=40, priority="min")
+    queue = Heap(items=items, d=40, priority="min")
     queue.build_heap()
     print(queue.items)
